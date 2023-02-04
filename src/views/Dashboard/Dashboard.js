@@ -21,7 +21,14 @@ import styled from 'styled-components';
 import useStakedBalanceOnBoardroom from '../../hooks/useStakedBalanceOnBoardroom';
 import { getDisplayBalance } from '../../utils/formatBalance';
 import useTotalStakedOnBoardroom from '../../hooks/useTotalStakedOnBoardroom';
-
+import useEarnings from '../../hooks/useEarnings';
+import useHarvest from '../../hooks/useHarvest';
+import useShareStats from '../../hooks/usebShareStats';
+import useStatsForPool from '../../hooks/useStatsForPool';
+import useFetchBoardroomAPR from '../../hooks/useFetchBoardroomAPR';
+import useCashPriceInLastTWAP from '../../hooks/useCashPriceInLastTWAP';
+import Buttoncomp from './Button-comp';
+import Bank from '../../bomb-finance';
 const BackgroundImage = createGlobalStyle`
   body {
     background: url(${HomeImage}) repeat !important;
@@ -48,13 +55,27 @@ const Card = styled.div`
   padding: 1rem;
   background-color: rgba(35, 40, 75, 0.75);
 `;
-const Title = styled.h2`
-  margin: 1rem 0 0 0;
-  text-align: center;
-`;
 
 
 
+// interface HarvestProps {
+//   bank: Bank;
+// }
+
+// const Harvest: React.FC<HarvestProps> = ({bank}) => {
+//   const earnings = useEarnings(bank.contract, bank.earnTokenName, bank.poolId);
+//   const {onReward} = useHarvest(bank);
+//   const bombStats = useBombStats();
+//   const tShareStats = useShareStats();
+
+//   const tokenName = bank.earnTokenName === 'BSHARE' ? 'BSHARE' : 'BOMB';
+//   const tokenStats = bank.earnTokenName === 'BSHARE' ? tShareStats : bombStats;
+//   const tokenPriceInDollars = useMemo(
+//     () => (tokenStats ? Number(tokenStats.priceInDollars).toFixed(2) : null),
+//     [tokenStats],
+//   );
+//   const earnedInDollars = (Number(tokenPriceInDollars) * Number(getDisplayBalance(earnings))).toFixed(2);
+// };
 
 const Dashboard = () => {
   
@@ -66,6 +87,40 @@ const Dashboard = () => {
   const tBondStats = useBondStats();
   const stakedBalance = useStakedBalanceOnBoardroom();
   const totalStaked = useTotalStakedOnBoardroom();
+  const cashPrice= useCashPriceInLastTWAP();
+  const scalingFactor = useMemo(() => (cashPrice ? Number(cashPrice) : null), [cashPrice]);
+  // const earnings = useEarnings(Bank.contract, Bank.earnTokenName, Bank.poolId);
+  // const tokenName = Bank.earnTokenName === 'BSHARE' ? 'BSHARE' : 'BOMB';
+  //   const tokenStats = Bank.earnTokenName === 'BSHARE' ? bShareStats : bombStats;
+  //   const tokenPriceInDollars = useMemo(
+  //     () => (tokenStats ? Number(tokenStats.priceInDollars).toFixed(2) : null),
+  //     [tokenStats]);
+  // const earnedInDollars = (Number(tokenPriceInDollars) * Number(getDisplayBalance(earnings))).toFixed(2);
+  const earnings = useEarnings(Bank.contract, Bank.earnTokenName, Bank.poolId);
+  // const {onReward} = useHarvest(Bank);
+
+ 
+  const tShareStats = useShareStats();
+  const boardroomAPR = useFetchBoardroomAPR();
+
+  // const tokenName = Bank.earnTokenName === 'BSHARE' ? 'BSHARE' : 'BOMB';
+  const tokenStats = Bank.earnTokenName === 'BSHARE' ? tShareStats : bombStats;
+  const tokenPriceInDollars = useMemo(
+    () => (tokenStats ? Number(tokenStats.priceInDollars).toFixed(2) : null),
+    [tokenStats],
+  );
+  const earnedInDollars = (Number(tokenPriceInDollars) * Number(getDisplayBalance(earnings))).toFixed(2);
+  const bombCirculatingSupply = useMemo(() => (bombStats ? String(bombStats.circulatingSupply) : null), [bombStats]);
+  const bShareCirculatingSupply = useMemo(
+    () => (bShareStats ? String(bShareStats.circulatingSupply) : null),
+    [bShareStats],
+  );
+  // const tBondCirculatingSupply = useMemo(
+  //   () => (tBondStats ? String(tBondStats.circulatingSupply) : null),
+  //   [tBondStats],
+  // );
+  let statsOnPool = useStatsForPool(Bank);
+
   const bombTotalSupply = useMemo(() => (bombStats ? String(bombStats.totalSupply) : null), [bombStats]);
   const bShareTotalSupply = useMemo(() => (bShareStats ? String(bShareStats.totalSupply) : null), [bShareStats]);
   const tBondTotalSupply = useMemo(() => (tBondStats ? String(tBondStats.totalSupply) : null), [tBondStats]);
@@ -102,21 +157,25 @@ return(
         <tr>
       
           <td>$BOMB</td>
-          <td> {bombPriceInBNB ? bombPriceInBNB : '-.----'} BTC</td>
+          <td> {roundAndFormatNumber(bombCirculatingSupply, 2)} BTC</td>
           <td>{roundAndFormatNumber(bombTotalSupply, 2)}</td>
+          <td> {bombPriceInBNB ? bombPriceInBNB : '-.----'} BTC</td>
           <td><TokenSymbol symbol='META' size={28}/></td>
         </tr>
         <tr>
           <td>$BSHARE</td>
-          <td> {bSharePriceInBNB ? bSharePriceInBNB : '-.----'} BNB</td>
+          <td> {roundAndFormatNumber(bShareCirculatingSupply, 2)} BNB</td>
           <td>{roundAndFormatNumber(bShareTotalSupply, 2)}</td>
+          <td> {bSharePriceInBNB ? bSharePriceInBNB : '-.----'} BNB</td>
           <td><TokenSymbol symbol='META' size={28}/></td>
 
         </tr>
         <tr>
           <td>$BBOND</td>
-          <td> {tBondPriceInBNB ? tBondPriceInBNB : '-.----'} BTC</td>
+          <td> {roundAndFormatNumber(bShareCirculatingSupply, 2)} BTC</td>
           <td>{roundAndFormatNumber(tBondTotalSupply, 2)}</td>
+          <td> {tBondPriceInBNB ? tBondPriceInBNB : '-.----'} BTC</td>
+
           <td><TokenSymbol symbol='META' size={28}/></td>
 
         </tr>
@@ -145,20 +204,26 @@ return(
           </Card>
         </Grid>
         
-        <Button className='button'style={{width:'59%'}}>
-                  Zap In
-                </Button>
-                <Grid container rowSpacing={1} >
+       
+                <Grid container rowSpacing={1}>
+                <Card style={{ float: 'right', width: '20%', marginRight: '2rem', marginLeft: '2px', height: '23rem' }}>
+          <h2>Latest News</h2>
+        </Card>
                 <Grid item xs={8}>
-                
-                  
-                <Button className='button1' style={{width:'49%',marginTop:'30px',marginRight:'5px'}}>
+                <span style={{marginLeft:'5rem'}}>
+        <Button className='button'style={{width:'100%'}}>
+                  Invest Now
+                </Button>
+               
+                <Button className='button' style={{width:'42%',marginTop:'30px',marginRight:'5px',marginLeft:'6rem'}}>
                   Chat On Discord
                 </Button>
-                <Button className='button1' style={{width:'49%',marginTop:'30px'}}>
+                <Button className='button' style={{width:'44%',marginTop:'30px'}}>
                   Read Docs
-                </Button>
-          <Card>
+                </Button></span>
+                
+               
+          <Card style={{marginLeft:'5rem'}}>
             
           <img src={BombImage} alt="Bomb.money" style={{ maxHeight: '40px',float:'left',padding:'7px' }} />
           <div className='header'>
@@ -173,7 +238,7 @@ return(
   <Grid item xs={2}>
   <span style={{ fontSize: '20px' }}>
                  Daily Returns<br />
-               2% <br />
+                 {(boardroomAPR/365).toFixed(3)}% <br />
            
               </span>
   </Grid>
@@ -188,8 +253,8 @@ return(
   <span style={{fontSize: '20px'}}>
   Earned: 
  <br />
-1660.4413      <br />
-≈ $298.88
+ {getDisplayBalance(earnings)}      <br />
+≈ ${earnedInDollars}
               </span>
   </Grid>
   <Grid item xs={4}>
@@ -200,7 +265,7 @@ return(
                   Withdraw
                 </Button>
                  <Button className='button1' style={{width:'200px',marginTop:'10px'}}>
-                  Claim Rewards
+                  Claim Rewards 
                 </Button>
   </Grid>
 </Grid>
@@ -209,9 +274,7 @@ return(
             
           </Card>
 
-         <Grid item xs={4}>
-          <Card>KFSL</Card>
-          </Grid>
+       
          </Grid>
        
          
@@ -278,7 +341,7 @@ return(
   <Grid item xs={2}>
   <span style={{ fontSize: '20px' }}>
                  Daily Returns<br />
-               2% <br />
+                 {(boardroomAPR/365).toFixed(2)}% <br />
            
               </span>
   </Grid>
@@ -293,25 +356,19 @@ return(
   <span style={{fontSize: '20px'}}>
   Earned: 
  <br />
-1660.4413      <br />
-≈ $298.88
+ {getDisplayBalance(earnings)}     <br />
+≈ {earnedInDollars}
               </span>
   </Grid>
   </Grid>
 
-          <div style={{display:"flex", alignItems:"flex-end"}}>
+          <div style={{display:"flex", alignItems:"flex-end",justifyContent:'space-between'}}>
             {/* href={buyBombAddress} */}
-            <button  style={{ margin: '5px',padding:"6px 24px 6px 8px",borderRadius:"16px",background:"none",color:"white",border:" 2px solid white" }}>
-              Deposit
-            </button>
-            {/* href={buyBombAddress} */}
-            <button  style={{ margin: '5px',padding:"6px 24px 6px 8px",borderRadius:"16px",background:"none",color:"white",border:" 2px solid white"  }}>
-              Withdraw
-            </button>
-            {/* href={buyBombAddress} */}
-            <button  style={{ margin: '5px',padding:"6px 24px 6px 8px",borderRadius:"16px",background:"none",color:"white",border:" 2px solid white" }}>
-              Claim Rewards
-            </button>
+            <Buttoncomp text="Deposit" symbol="UP" />
+              {/* href={buyBombAddress} */}
+              <Buttoncomp text="Withdraw" symbol="DOWN" />
+              {/* href={buyBombAddress} */}
+              <Buttoncomp text="Claim Rewards" symbol="BSHARE" />
           </div>
         </div>
         <hr style={{border:"1px solid rgba(0, 173, 232, 1)"}}/>
@@ -360,7 +417,7 @@ return(
   <Grid item xs={2}>
   <span style={{ fontSize: '20px' }}>
                  Daily Returns<br />
-               2% <br />
+                 {(boardroomAPR/365).toFixed(2)}% <br />
            
               </span>
   </Grid>
@@ -375,25 +432,20 @@ return(
   <span style={{fontSize: '20px'}}>
   Earned: 
  <br />
-1660.4413      <br />
-≈ $298.88
+ {getDisplayBalance(earnings)}     <br />
+
+≈ ${earnedInDollars}
               </span>
   </Grid>
   </Grid>
 
           <div style={{display:"flex", alignItems:"flex-end"}}>
             {/* href={buyBombAddress} */}
-            <button  style={{ margin: '5px',padding:"6px 24px 6px 8px",borderRadius:"16px",background:"none",color:"white",border:" 2px solid white" }}>
-              Deposit
-            </button>
-            {/* href={buyBombAddress} */}
-            <button  style={{ margin: '5px',padding:"6px 24px 6px 8px",borderRadius:"16px",background:"none",color:"white",border:" 2px solid white"  }}>
-              Withdraw
-            </button>
-            {/* href={buyBombAddress} */}
-            <button  style={{ margin: '5px',padding:"6px 24px 6px 8px",borderRadius:"16px",background:"none",color:"white",border:" 2px solid white" }}>
-              Claim Rewards
-            </button>
+            <Buttoncomp text="Deposit" symbol="UP" />
+              {/* href={buyBombAddress} */}
+              <Buttoncomp text="Withdraw" symbol="DOWN" />
+              {/* href={buyBombAddress} */}
+              <Buttoncomp text="Claim Rewards" symbol="BSHARE" />
           </div>
         </div>
 
@@ -418,7 +470,7 @@ return(
   <Grid item xs={4}>
   <span style={{ fontSize: '20px' }}>
   Current Price: (Bomb)^2<br />
-  BBond = 6.2872 BTCB <br />
+  BBond = {Number(scalingFactor / 100000000000000)} BTCB <br />
            
               </span>
   </Grid>
@@ -426,7 +478,6 @@ return(
   <span style={{fontSize: '20px'}}>
   Available to redeem:  <br />
   456    <br />
-             ≈ $1171.62
               </span>
   </Grid>
   

@@ -11,12 +11,14 @@
   }
    .button{
     margin-top: 10px;
-    width: 64%;
+    margin-left: 10px;
+    width: 100%;
     background-color: skyblue;
     color:white;
     align-content: center;
    } 
    .button1{
+    
     background-color: skyblue;
     color:white;
     align-content: center;

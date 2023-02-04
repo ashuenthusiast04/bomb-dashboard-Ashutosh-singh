@@ -8,6 +8,9 @@ import xbombLogo from '../../assets/img/xbomb.png';
 import busmLogo from '../../assets/img/busm-256.png'
 import tShareLogoPNG from '../../assets/img/bshares.png';
 import tBondLogo from '../../assets/img/bbond.png';
+import upLogo from '../../assets/img/upward.png';
+import downLogo from '../../assets/img/down-arrow.png';
+import cartLogo from '../../assets/img/cart.png';
 
 import bombFtmLpLogo from '../../assets/img/bomb-bitcoin-LP.png';
 import bshareFtmLpLogo from '../../assets/img/bshare-bnb-LP.png';
@@ -39,6 +42,9 @@ const logosBySymbol: {[title: string]: string} = {
   BTC: btcLogo,
   SVL: bnbLogo,
   META : metamaskLogo,
+  UP: upLogo,
+  DOWN:downLogo,
+  PURCHASE:cartLogo,
   'BOMB-BNB-LP': bombFtmLpLogo,
   'BOMB-BTCB-LP': bombFtmLpLogo,
     '80BOMB-20BTCB-LP': bombFtmLpLogo,
