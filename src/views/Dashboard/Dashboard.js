@@ -45,6 +45,7 @@ import useApprove,{ApprovalState} from '../../hooks/useApprove';
 import useCashPriceInEstimatedTWAP from '../../hooks/useCashPriceInEstimatedTWAP';
 import bombFinance from '../../bomb-finance';
 import useBombFinance from '../../hooks/useBombFinance';
+import uselastEpoch from '../../hooks/useLastEpoch';
 
 const BackgroundImage = createGlobalStyle`
   body {
@@ -98,6 +99,8 @@ const Dashboard = () => {
   const history= useHistory();
   const TVL = useTotalValueLocked();
   const currentEpoch = useCurrentEpoch();
+  const lastEpoch = uselastEpoch();
+
   const { to } = useTreasuryAllocationTimes();
   const bombStats = useBombStats();
   const bShareStats = usebShareStats();
@@ -125,7 +128,6 @@ const { onRedeem } = useRedeemOnBoardroom();
   const tokenName = Bank.earnTokenName === 'BSHARE' ? 'BSHARE' : 'BOMB';
   const canClaimReward= useClaimRewardCheck();
 
-   
   // const earnings = useEarnings(Bank.contract, Bank.earnTokenName, Bank.poolId);
   // const tokenName = Bank.earnTokenName === 'BSHARE' ? 'BSHARE' : 'BOMB';
   //   const tokenStats = Bank.earnTokenName === 'BSHARE' ? bShareStats : bombStats;
@@ -253,7 +255,7 @@ return(
     <hr  style={{opacity:'0.2'}} />
     <h5>Live TWAP: {scalingFactor}</h5>
     <h5>TVL: <CountUp style={{ fontSize: '25px' }} end={TVL} separator="," prefix="$" /></h5>
-    <h5>Last Epoch TWAP: 1.22
+    <h5>Last Epoch TWAP: <Typography>{(Number(lastEpoch) / 100000000000000).toFixed(5)}</Typography>
     </h5>
   
           
@@ -268,9 +270,14 @@ return(
                 {/* <Card style={{ float: 'right', width: '20%', marginRight: '2rem', marginLeft: '2px', height: '23rem' }}>
           <h2>Latest News</h2>
         </Card> */}
+        <div style={{ color: 'white', width: '100%', textAlign: 'center', marginBottom: '5px' }}>
+            <a style={{ color: 'rgba(158, 230, 255, 1)', padding: '10px' }} href="https://docs.bomb.money/">
+              Read Investment Strategy
+            </a>
+          </div>
                 <Grid item xs={8}>
                 <span style={{marginLeft:'0rem',color:'rgba(0,245,171,0.5)'}}>
-        <Button className='button'style={{width:'98%'}}>
+        <Button className='button'style={{width:'98%',backgroundImage: 'linear-gradient(rgba(0, 245, 171, 0.5),rgba(0, 173, 232, 0.5))',}}>
                   Invest Now
                 </Button>
                
@@ -304,7 +311,7 @@ return(
   <Grid item xs={3}>
   <span style={{fontSize: '20px'}}>
               Your Stake: <br />
-            6.0000      <br />
+              {getDisplayBalance(stakedBalance)}     <br />
              ≈ ${getDisplayBalance(stakedBalance)}
               </span>
   </Grid>
@@ -456,7 +463,7 @@ return(
   <Grid item xs={3}>
   <span style={{fontSize: '20px'}}>
               Your Stake: <br />
-            6.0000      <br />
+              {getDisplayBalance(stakedBalance)}      <br />
              ≈ ${getDisplayBalance(stakedBalance)}
               </span>
   </Grid>
@@ -587,7 +594,7 @@ return(
   <Grid item xs={3}>
   <span style={{fontSize: '20px'}}>
               Your Stake: <br />
-            6.0000      <br />
+              {getDisplayBalance(stakedBalance)}    <br />
              ≈ ${getDisplayBalance(stakedBalance)}
               </span>
   </Grid>
@@ -699,10 +706,14 @@ return(
   </Grid>
   
   <Grid item xs={4}>
+  <div style={{ display: 'flex', flexDirection: 'column', margin: '0 8px' }}>
+
   <span style={{fontSize: '20px'}}>
-  Available to redeem:  <br />
-  456   </span>
+  Purchase BBOND <br />
+  Bomb is over peg  </span>
+  </div>
   <span>
+    
   <div
                   style={{
                     width:'120px',

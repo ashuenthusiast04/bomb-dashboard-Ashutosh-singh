@@ -534,7 +534,10 @@ export class BombFinance {
     const { Treasury } = this.contracts;
     return Treasury.getBondPremiumRate();
   }
-
+  async getLastEpoch() : Promise<BigNumber> {
+    const { Treasury } = this.contracts;
+    return Treasury.previousEpochBombPrice();
+  }
   /**
    * Buy bonds with cash.
    * @param amount amount of cash to purchase bonds with.
