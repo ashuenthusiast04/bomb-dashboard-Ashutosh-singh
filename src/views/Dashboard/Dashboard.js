@@ -281,10 +281,10 @@ return(
                   Invest Now
                 </Button>
                
-                <Button className='button' style={{width:'48%',marginTop:'30px',marginLeft:'8px'}}>
+                <Button className='button' style={{width:'48%',marginTop:'30px',marginLeft:'8px',backgroundImage: 'linear-gradient(rgba(0, 245, 171, 0.5),rgba(0, 173, 232, 0.5))'}}>
                   Chat On Discord
                 </Button>
-                <Button className='button' style={{width:'49%',marginTop:'30px'}}>
+                <Button className='button' style={{width:'49%',marginTop:'30px',backgroundImage: 'linear-gradient(rgba(0, 245, 171, 0.5),rgba(0, 173, 232, 0.5))'}}>
                   Read Docs
                 </Button></span>
                 
